@@ -6,14 +6,25 @@ require('dotenv').config();
 
 
 const port= process.env.PORT;
-const data = require('./data/weather.json');
+const wData = require('./data/weather.json');
 // a server endpoint 
 app.get('/', // our endpoint name
  function (req, res) { // callback function of what we should do with our request
   res.send('Hello World!') // our endpoint function response
 });
-app.get('/weather-data',(req,res)=>{
-    res.json(data);
+app.get('/weather',(req,res)=>{
+  const respData=wData.data.map(obj => new Weather(obj));
+    res.json(respData);
 });
-
-app.listen(port) // kick start the express server to work
+class Weather{
+  constructor(wData){
+    this.description=wData.weather.description;
+    this.date=wData.valid_date;
+    this.high=wData.max_temp;
+    this.low=wData.low_temp;
+  }
+}
+app.listen(port, () =>{
+  console.log(`server start on port: ${port}`);
+}
+); // kick start the express server to work
